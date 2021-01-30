@@ -7,8 +7,25 @@ import urllib
 print("Fetching Data for Germany:")
 country = "Germany"
 
+def testing():
+    testing ="https://opendata.ecdc.europa.eu/covid19/testing/json/"
+    arrTesting =[]
+    t=0
+    with urllib.request.urlopen(testing) as url:
+        s = url.read()
+        reader = json.loads(s)
 
-def fetch():
+        # Join record data table
+        for row in reader:
+            if row['country'] == country:
+                t=t+1
+                print(row['new_cases'])
+                #print(row['tests_done'])
+                #print(row['population'])
+                arrTesting.append(int(row['tests_done']))
+    return arrTesting, t
+
+def casesAndDeaths():
     url = 'https://opendata.ecdc.europa.eu/covid19/casedistribution/json'
     i = 0
     d= 0
@@ -27,32 +44,16 @@ def fetch():
                 arrCases.append(int(row['cases_weekly']))
                 arrDeaths.append(int(row['deaths_weekly']))
 
-    ############################################################################
-    #testing
-    testing = "https://opendata.ecdc.europa.eu/covid19/testing/json/"
-    arrTesting = []
-    t = 0
-    with urllib.request.urlopen(testing) as url:
-        s = url.read()
-        reader = json.loads(s)
-
-        # Join record data table
-        for row in reader:
-            if row['country'] == country:
-                t = t + 1
-                print(row['new_cases'])
-                # print(row['tests_done'])
-                # print(row['population'])
-                arrTesting.append(int(row['tests_done']))
-
     arrCases.reverse()
     arrDeaths.reverse()
-    #arrTesting.reverse()
+    arrTesting = []
+    t=0
+    arrTesting, t = testing()
     print(list(range(i)))
     x_data = list(range(i))
     x2_data = list(range(t))
     plt.plot(x_data, arrCases, c='r', label='Cases')
-    plt.grid(x_data, arrDeaths, c='r', label='Deaths')
+    plt.plot(x_data, arrDeaths, c='r', label='Deaths')
     #plt.plot(x2_data, arrTesting, c='r', label='Testing')
     plt.show()
     plt.title("Covid-19 Germany - All Time")
@@ -60,26 +61,8 @@ def fetch():
     plt.ylabel("Cases Per Week")
     plt.legend()
 
-fetch()
-def testing():
-    testing ="https://opendata.ecdc.europa.eu/covid19/testing/json/"
-    arrTesting =[]
-    t=0
-    with urllib.request.urlopen(testing) as url:
-        s = url.read()
-        reader = json.loads(s)
 
-        # Join record data table
-        for row in reader:
-            if row['country'] == country:
-                t=t+1
-                print(row['new_cases'])
-                #print(row['tests_done'])
-                #print(row['population'])
-                arrTesting.append(int(row['tests_done']))
-
-testing()
-
+casesAndDeaths()
 
 
 def analyze():
